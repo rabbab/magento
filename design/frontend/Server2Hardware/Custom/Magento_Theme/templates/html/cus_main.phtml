@@ -1,0 +1,462 @@
+
+<div class="BannerCategories">
+    <div class="container">
+        <div class="bordersWrap">
+            <div class="col-md-3">
+                <?php
+                $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+                $categoryFactory = $objectManager->create('Magento\Catalog\Model\ResourceModel\Category\CollectionFactory');
+                $categories = $categoryFactory->create()
+                    ->addAttributeToSelect('*')
+                    ->addAttributeToFilter('is_active',1)
+                    ->addAttributeToFilter('parent_id',2)
+                    ->setOrder('position', 'ASC');
+                ?>
+                <div class="category_panel" data-action="navigation">
+                        <div class="categoryMenu">
+                    <ul id="category_panel_menu" data-mage-init='{"menu":{"responsive":true, "expanded":false, "position":{"my":"left top","at":"left+10 top+30"}}}'>
+                        <?php foreach ($categories as $category) : ?>
+                        <li class="ui-menu-item"><a href="<?php echo $category->getUrl(); ?>" data-toggle="collapse"><?php echo $category->getName(); ?></a>
+                            <?php $catId = $category->getId(); // Parent Category ID
+                            $subcategory = $objectManager->create('Magento\Catalog\Model\Category')->load($category->getId());
+                            $subcats = $subcategory->getChildrenCategories();
+                            $categoryHelper = $this->getCategoryHelper();
+                            ?>
+                            <ul id="<?php echo $category->getId(); ?>">
+                                <?php foreach ($subcats as $subcat) { ?>
+                                    <li><a href="<?php echo $subcat->getUrl(); ?>" ><?php echo $subcat->getName(); ?></a></li>
+                                <?php } ?>
+                            </ul>
+                            <?php endforeach; ?>
+                        </li>
+
+                    </ul>
+                    </div>
+                </div>
+                <!--                <div class="categoryMenu">-->
+                <!--                    <ul>-->
+                <!--                        <li><a href="javacript:;">Memory</a></li>-->
+                <!--                        <li><a href="javacript:;">Storage</a></li>-->
+                <!--                        <li><a href="javacript:;">CPU's Processors</a></li>-->
+                <!--                        <li><a href="javacript:;">Network &amp; Accessories</a></li>-->
+                <!--                        <li><a href="javacript:;">Solid State Storage</a></li>-->
+                <!--                        <li><a href="javacript:;">Motherboards</a></li>-->
+                <!--                        <li><a href="javacript:;">Graphic Cards</a></li>-->
+                <!--                        <li><a href="javacript:;">Power</a></li>-->
+                <!--                        <li><a href="javacript:;">Printer &amp; Cartriges</a></li>-->
+                <!--                        <li><a href="javacript:;">Input Devices</a></li>-->
+                <!--                        <li><a href="javacript:;">Cooling Fans Heat Sinks</a></li>-->
+                <!--                        <li><a href="javacript:;">Accessories</a></li>-->
+                <!---->
+                <!--                    </ul>-->
+                <!--                </div>-->
+            </div>
+            <div class="col-md-6 NopaddingLeft">
+                <div class="HomeBanner">
+
+                    <img src='<?php echo $this->getViewFileUrl('images/banner-home.jpg'); ?>' alt="-" class="img-responsive" />
+
+                </div>
+                <!-- HomeBanner -->
+
+            </div>
+            <!-- col-md-6 -->
+
+            <div class="col-md-3">
+                <div class="getAQuote">
+                    <h3>Request For Quote</h3>
+                    <p>Looking for a large quantity? Please call at 1-888-898-8012 and one of our representative will be happy to assist you.</p>
+                    <div class="requestForm">
+                        <form role="form" method="post">
+                            <div class="form-group">
+                                <label>Part Number:</label>
+                                <input type="text"  name="partNumber" class="form-control" />
+                            </div>
+                            <!-- #form-group -->
+                            <div class="form-group">
+                                <label>Quantity Needed:</label>
+                                <input type="text" name="quantity" class="form-control" />
+                            </div>
+                            <!-- #form-group -->
+                            <div class="form-group">
+                                <label>Email Address:</label>
+                                <input type="text" name="email" class="form-control" />
+                            </div>
+                            <!-- #form-group -->
+
+                            <div class="form-group">
+                                <input type="submit" name="submit" class="btn btn-default" value="Submit RFQ" />
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <!-- #bordersWrap -->
+    </div>
+    <!-- container -->
+</div>
+<!-- #BannerCategories -->
+
+<?php
+if(isset($_POST['submit']))
+{
+    $partNumber = $_POST['partNumber']; // Get Name value from HTML Form
+    $quantity = $_POST['quantity']; // Get Message Value
+    $email_id = $_POST['email']; // Get Email Value
+    $to = "no-reply@server2hardware.com"; // You can change here your Email
+    $subject = "'$partNumber' has been sent a mail"; // This is your subject
+
+    // HTML Message Starts here
+    $message = "<html>
+                                    <body>
+                                        <table style='width:600px;'>
+                                            <tbody>
+                                                <tr>
+                                                    <td style='width:150px'><strong>Name: </strong></td>
+                                                    <td style='width:400px'>$partNumber</td>
+                                                </tr>
+                                                <tr>
+                                                    <td style='width:150px'><strong>Email ID: </strong></td>
+                                                    <td style='width:400px'>$email_id</td>
+                                                </tr>
+                                                <tr>
+                                                    <td style='width:150px'><strong>Mobile No: </strong></td>
+                                                    <td style='width:400px'>$quantity</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </body>
+                            </html>";
+
+    // HTML Message Ends here
+
+    // Always set content-type when sending HTML email
+    $headers = "MIME-Version: 1.0" . "\r\n";
+    $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
+
+    // More headers
+    $headers .= 'From: Admin' . "\r\n"; // Give an email id on which you want get a reply. User will get a mail from this email id
+    $headers .= 'Cc: no-reply@server2hardware.com' . "\r\n"; // If you want add cc
+    $headers .= 'Bcc: no-reply@server2hardware.com' . "\r\n"; // If you want add Bcc
+
+    mail($to,$subject,$message,$headers);
+}
+?>
+
+<!-- #form-group -->
+
+<!-- #form-group -->
+
+<div class="awardsSection">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="media">
+                    <div class="media-left">
+                        <img src='<?php echo $this->getViewFileUrl('images/trophy.png'); ?>' class="media-object" alt="-" />
+                    </div>
+                    <div class="media-body">
+                        <h4 class="media-heading">Award-winning IT Hardware</h4>
+                        <p>&amp; Customer Services</p>
+                    </div>
+                </div>
+                <!-- #media -->
+
+            </div>
+            <!-- #col-md-3 -->
+
+            <div class="col-md-3">
+                <div class="media">
+                    <div class="media-left">
+                        <img src='<?php echo $this->getViewFileUrl('images/freevan.png'); ?>' class="media-object" alt="-" />
+                    </div>
+                    <div class="media-body">
+                        <h4 class="media-heading">Free Delivery Over £50</h4>
+                        <p>All over the world</p>
+                    </div>
+                </div>
+                <!-- #media -->
+            </div>
+            <!-- #col-md-3 -->
+
+            <div class="col-md-3">
+                <div class="media">
+                    <div class="media-left">
+                        <img src='<?php echo $this->getViewFileUrl('images/trust.png'); ?>' class="media-object" style="width:60px; margin-top: 10px" alt="-" />
+                    </div>
+                    <div class="media-body">
+                        <h4 class="media-heading">4.7 star rating on Trustpilot</h4>
+                        <p>From over 11,000 customer reviews</p>
+                    </div>
+                </div>
+                <!-- #media -->
+
+            </div>
+            <!-- #col-md-3 -->
+
+            <div class="col-md-3">
+                <div class="media">
+                    <div class="media-left">
+                        <img src='<?php echo $this->getViewFileUrl('images/8years.png'); ?>' class="media-object" alt="-" />
+                    </div>
+                    <div class="media-body">
+                        <h4 class="media-heading">Industry Experience
+                        </h4>
+                        <p>8+ years of IT Hardware supply</p>
+                    </div>
+                </div>
+                <!-- #media -->
+
+            </div>
+            <!-- #col-md-3 -->
+        </div>
+    </div>
+    <!-- container -->
+</div>
+<!-- #awardsSection -->
+
+<div class="RebustSolutionbanner">
+    <div class="container">
+        <div class="col-md-6">
+
+            <div class="txtContent">
+                <div class="WhiteBox"></div>
+                <h3>Robust APC Solutions</h3>
+                <p>Get unrivaled cooling architectures solutions – all built to increase your system’s cooling efficiency.</p>
+                <a href="javascript:;" class="btn btn-default">Learning More</a>
+
+            </div>
+            <!-- #txtContent -->
+
+        </div>
+        <!-- #col-md-6 -->
+    </div>
+    <!-- #container -->
+
+</div>
+<!-- #RebustSolutionbanner -->
+
+<div class="productShowCase">
+    <div class="container">
+        <h3 class="heading">Products ShowCase</h3>
+        <p class="subHeading">Keep moving forward with the latest IT products – at highly affordable prices</p>
+
+        <ul class="ShowCaseTabs">
+            <li><a href="javascript:;" class="active">Best Seller</a></li>
+            <li><a href="javascript:;">Top Picks</a></li>
+            <li><a href="javascript:;">Hard Drives</a></li>
+            <li><a href="javascript:;">Motherboard</a></li>
+            <li><a href="javascript:;">CPU</a></li>
+            <li><a href="javascript:;">Power Supplies</a></li>
+        </ul>
+        <!-- #ShowCaseTabs -->
+
+        <div class="productList">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="box">
+                        <div class="boxImg">
+                            <img src='<?php echo $this->getViewFileUrl('images/products1.png'); ?>' alt="-" class="img-responsive" />
+                        </div>
+                        <!-- #boxImg -->
+                        <div class="ProductText">
+                            <p>BX80617I5520M - Intel Core i5-520M Dual Core 2.40GHz 2.50GT/s DMI 3MB L3</p>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6"><span class="p-price">$68.00</span></div>
+                            <div class="col-md-6"><a href="javascript:;" class="btn btn-primary">Learn More</a></div>
+                        </div>
+                    </div>
+                    <!-- #boxImg -->
+                </div>
+                <!-- #col-md-3 -->
+
+                <div class="col-md-3">
+                    <div class="box">
+                        <div class="boxImg">
+                            <img src='<?php echo $this->getViewFileUrl('images/products2.png'); ?>'alt="-" class="img-responsive" />
+                        </div>
+                        <!-- #boxImg -->
+                        <div class="ProductText">
+                            <p>BX80617I5520M - Intel Core i5-520M Dual Core 2.40GHz 2.50GT/s DMI 3MB L3</p>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6"><span class="p-price">$68.00</span></div>
+                            <div class="col-md-6"><a href="javascript:;" class="btn btn-primary">Learn More</a></div>
+                        </div>
+                    </div>
+                    <!-- #boxImg -->
+                </div>
+                <!-- #col-md-3 -->
+
+                <div class="col-md-3">
+                    <div class="box">
+                        <div class="boxImg">
+                            <img src='<?php echo $this->getViewFileUrl('images/products3.png'); ?>' alt="-" class="img-responsive" />
+                        </div>
+                        <!-- #boxImg -->
+                        <div class="ProductText">
+                            <p>BX80617I5520M - Intel Core i5-520M Dual Core 2.40GHz 2.50GT/s DMI 3MB L3</p>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6"><span class="p-price">$68.00</span></div>
+                            <div class="col-md-6"><a href="javascript:;" class="btn btn-primary">Learn More</a></div>
+                        </div>
+                    </div>
+                    <!-- #boxImg -->
+                </div>
+                <!-- #col-md-3 -->
+
+                <div class="col-md-3">
+                    <div class="box">
+                        <div class="boxImg">
+                            <img src='<?php echo $this->getViewFileUrl('images/products4.png'); ?>' alt="-" class="img-responsive" />
+                        </div>
+                        <!-- #boxImg -->
+                        <div class="ProductText">
+                            <p>BX80617I5520M - Intel Core i5-520M Dual Core 2.40GHz 2.50GT/s DMI 3MB L3</p>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6"><span class="p-price">$68.00</span></div>
+                            <div class="col-md-6"><a href="javascript:;" class="btn btn-primary">Learn More</a></div>
+                        </div>
+                    </div>
+                    <!-- #boxImg -->
+                </div>
+                <!-- #col-md-3 -->
+            </div>
+
+        </div>
+        <!-- #ShowCaseTabs -->
+
+        <h3 class="heading">Products ShowCase</h3>
+        <p class="subHeading">Keep moving forward with the latest IT products – at highly affordable prices</p>
+
+        <?php
+        echo $this->getLayout()
+            ->createBlock('Magento\Cms\Block\Block')
+            ->setBlockId('featured_categories')
+            ->toHtml();
+        ?>
+        <!-- #ShowCaseTabs -->
+    </div>
+    <!-- #productShowCase -->
+</div>
+<!-- #productShowCase -->
+
+<div class="TwoBanners">
+    <div class="col-md-6 bg1">
+        <div class="TextContent">
+            <h3>Dunamic IT Solutions</h3>
+            <p>Transform your businesses &amp; leverage innovation - all with modern DELL products to drive technological success. </p>
+            <a href="javascript:;">Learn More</a>
+        </div>
+        <!-- #TextContent -->
+    </div>
+    <!-- col-md-6-->
+    <div class="col-md-6 bg2">
+        <div class="TextContent White">
+            <h3>Dunamic IT Solutions</h3>
+            <p>Transform your businesses &amp; leverage innovation - all with modern DELL products to drive technological success. </p>
+            <a href="javascript:;">Learn More</a>
+        </div>
+        <!-- #TextContent -->
+    </div>
+    <!-- col-md-6-->
+</div>
+<!-- TwoBanners -->
+
+<div class="todayReadSection">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12"><h3 class="sectionHeading">Today's Must Read</h3></div>
+
+            <div class="col-md-6">
+                <div class="featurePost">
+                    <div class="postImg">
+                        <img src='<?php echo $this->getViewFileUrl('images/postimg1.jpg'); ?>' alt="-" class="img-responsive" />
+                    </div>
+                    <!-- postImg -->
+                    <div class="postText">
+
+                        <h4>Microsoft is bringing its Defender security software to iOS and Android</h4>
+                        <p>In the recent years, Microsoft has introduced some solid apps for iOS and Android. The company has even bigger plans now, providing a robust threat protection antivirus for mobile platforms...</p>
+                        <a href="javascript:;">READ MORE</a>
+                    </div>
+                    <!-- #postText -->
+
+                </div>
+                <!-- featurePost -->
+            </div>
+            <!-- #col-md-6 -->
+
+            <div class="col-md-6">
+                <div class="PostList">
+                    <ul>
+                        <li>
+                            <div class="col-md-4">
+
+                                <img src='<?php echo $this->getViewFileUrl('images/post1.png'); ?>' alt="-" class="img-responsive" />
+                            </div>
+                            <!-- #col-md-3-->
+
+                            <div class="col-md-8">
+                                <h3>How to clear your computer of distracting clutter</h3>
+                                <p>Since all of the distractions in the computer or laptop are absolutely fruitless, causing a slower working experience. I once tried dumping every part on the desktop into a folder called “Extra Things” (yes, it’s not a very inventive folder identify)...</p>
+                                <a href="javascript:;">READ MORE</a>
+                            </div>
+                            <!-- cal-md-9 -->
+                        </li>
+                        <li>
+                            <div class="col-md-4">
+                                <img src='<?php echo $this->getViewFileUrl('images/post2.png'); ?>'alt="-" class="img-responsive" />
+                            </div>
+                            <!-- #col-md-3-->
+
+                            <div class="col-md-8">
+                                <h3>How to clear your computer of distracting clutter</h3>
+                                <p>Since all of the distractions in the computer or laptop are absolutely fruitless, causing a slower working experience. I once tried dumping every part on the desktop into a folder called “Extra Things” (yes, it’s not a very inventive folder identify)...</p>
+                                <a href="javascript:;">READ MORE</a>
+                            </div>
+                            <!-- cal-md-9 -->
+                        </li>
+                        <li>
+                            <div class="col-md-4">
+                                <img src='<?php echo $this->getViewFileUrl('images/post3.png'); ?>' alt="-" class="img-responsive" />
+                            </div>
+                            <!-- #col-md-3-->
+
+                            <div class="col-md-8">
+                                <h3>How to clear your computer of distracting clutter</h3>
+                                <p>Since all of the distractions in the computer or laptop are absolutely fruitless, causing a slower working experience. I once tried dumping every part on the desktop into a folder called “Extra Things” (yes, it’s not a very inventive folder identify)...</p>
+                                <a href="javascript:;">READ MORE</a>
+                            </div>
+                            <!-- cal-md-9 -->
+                        </li>
+                        <li>
+                            <div class="col-md-4">
+                                <img src='<?php echo $this->getViewFileUrl('images/post4.png'); ?>' alt="-" class="img-responsive" />
+                            </div>
+                            <!-- #col-md-3-->
+
+                            <div class="col-md-8">
+                                <h3>How to clear your computer of distracting clutter</h3>
+                                <p>Since all of the distractions in the computer or laptop are absolutely fruitless, causing a slower working experience. I once tried dumping every part on the desktop into a folder called “Extra Things” (yes, it’s not a very inventive folder identify)...</p>
+                                <a href="javascript:;">READ MORE</a>
+                            </div>
+                            <!-- cal-md-9 -->
+                        </li>
+                    </ul>
+                </div>
+                <!-- #PostList -->
+            </div>
+            <!-- #col-md-6 -->
+        </div>
+        <!-- row-->
+    </div>
+    <!-- container -->
+</div>
+<!-- #todayReadSection -->
+

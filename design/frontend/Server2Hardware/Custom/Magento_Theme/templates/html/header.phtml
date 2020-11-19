@@ -1,0 +1,227 @@
+<?php
+$currentUrl  = $this->getUrl('*/*/*', ['_current' => true, '_use_rewrite' => true]);
+$login_url = $this->getUrl('customer/account/login', array('referer' => base64_encode($currentUrl)));
+$account_url = $this->getUrl('customer/account/create', array('referer' => base64_encode($currentUrl)));
+
+$object =  \Magento\Framework\App\ObjectManager::getInstance();
+$cart = $object->get('Magento\Checkout\Model\Session')->getQuote()->getAllVisibleItems();
+$cartCount = count( $cart );
+
+$wishlistHelper = $this->helper('Magento\Wishlist\Helper\Data');
+
+if ($this->getRequest()->getParam('wishlist_next')) {
+    $additional['wishlist_next'] = 1;
+}
+?>
+
+
+    
+    
+<script type="text/x-magento-init">
+     {
+         "*": {
+             "Magento_Ui/js/core/app": {
+                 "components": {
+                     "wishlist": {
+                         "component": "Magento_Wishlist/js/view/wishlist"
+                     }
+                 }
+             }
+         }
+     }
+ </script>
+<div class="topHeader">
+    <div class="container">
+        <p>We accept PO's from Fortune 1000 Companies, Government, Universities, Schools and Colleges <a href="<?php echo $login_url ?>"  class="btn btn-info"> <span class="fas fa-lock"></span> Sign in</a> <a href="<?php echo $account_url ?>" class="btn btn-info"> <span class="fas fa-user"></span> My Account</a></p>
+    </div>
+    <!-- container -->
+</div>
+<!-- #topHeader -->
+
+<div class="LogoMenu">
+    <div class="container">
+        <div class="col-md-3 ">
+            <a href="<?php echo $this->getUrl('/') ?>" class="siteLogo"><img src='<?php echo $this->getViewFileUrl('images/logo.png'); ?>'/></a>
+        </div>
+        <!-- col-md-3 -->
+        <div class="col-md-6">
+
+            <div class="navbar-default">
+
+                <div id="navbar" class="navbar-collapse collapse">
+                    <nav class="mainMenu">
+                        <?php
+                        echo $this->getLayout()
+                            ->createBlock('Magento\Cms\Block\Block')
+                            ->setBlockId('top-menu')
+                            ->toHtml();
+                        ?>
+                    </nav>
+                </div>
+            </div>
+        </div>
+        <!--#col-md-6 -->
+
+        <div class="col-md-3">
+            <ul class="topRightC2A">
+                <li><a href="tel:+1-888-898-8012"><i class="fas fa-phone-alt"></i> <?php
+                        echo $this->getLayout()
+                            ->createBlock('Magento\Cms\Block\Block')
+                            ->setBlockId('header-contact-number')
+                            ->toHtml();
+                        ?>
+                    </a></li>
+                <li><a href="mailto:Sales@m4l.com"><i class="fas fa-envelope"></i> <?php echo $this->getLayout()
+                            ->createBlock('Magento\Cms\Block\Block')
+                            ->setBlockId('header-contact-email')
+                            ->toHtml();
+                        ?>
+                    </a></li>
+
+            </ul>
+        </div>
+        <!-- col-md-3 -->
+
+
+    </div>
+    <!-- container -->
+</div>
+<!-- #LogoMenu -->
+
+<div class="AllCategoryMenu">
+    <div class="container">
+        <div class="col-md-3 noPaddingLeftRight">
+        
+                 <!--  <ul class="mainCategoryMenu dropdown">
+                <li>
+                <a href="javascript:;" role="button" data-toggle="dropdown" class="allCatLink">All Categories <span class="caret"></span></a>
+                   <?php
+                $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+                $categoryFactory = $objectManager->create('Magento\Catalog\Model\ResourceModel\Category\CollectionFactory');
+                $categories = $categoryFactory->create()
+                    ->addAttributeToSelect('*')
+                    ->addAttributeToFilter('is_active',1)
+                    ->addAttributeToFilter('parent_id',2)
+                    ->setOrder('position', 'ASC');
+                ?>
+                    <ul class="dropdown-menu multi-level" role="menu" aria-labelledby="dropdownMenu">
+                        <?php foreach ($categories as $category) : ?>
+                                <li class="dropdown-submenu"><a href="<?php echo $category->getUrl(); ?>" data-toggle="collapse"><?php echo $category->getName(); ?></a>
+                                
+                            <?php $catId = $category->getId(); // Parent Category ID
+                            $subcategory = $objectManager->create('Magento\Catalog\Model\Category')->load($category->getId());
+                            $subcats = $subcategory->getChildrenCategories();
+                            $categoryHelper = $this->getCategoryHelper();
+                            ?>
+                            <ul id="<?php echo $category->getId(); ?>" class="dropdown-menu">
+                                <?php foreach ($subcats as $subcat) { ?>
+                                    <li><a href="<?php echo $subcat->getUrl(); ?>" ><?php echo $subcat->getName(); ?></a></li>
+                                <?php } ?>
+                            </ul>
+                                
+                                
+                                </li>
+                         <?php endforeach; ?>   
+                    </ul>
+                    
+                     
+                 </li>
+            </ul>-->
+            
+            
+            <div class="dropdown TopButtonCategory">
+              <?php
+                $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+                $categoryFactory = $objectManager->create('Magento\Catalog\Model\ResourceModel\Category\CollectionFactory');
+                $categories = $categoryFactory->create()
+                    ->addAttributeToSelect('*')
+                    ->addAttributeToFilter('is_active',1)
+                    ->addAttributeToFilter('parent_id',2)
+                    ->setOrder('position', 'ASC');
+                ?>
+            <a id="dLabel" role="button" data-toggle="dropdown" class="btn btn-primary" data-target="#" href="#">
+                All Categories <span class="caret"></span>
+            </a>
+    		<ul class="dropdown-menu multi-level" role="menu" aria-labelledby="dropdownMenu">
+           
+             
+              <?php foreach ($categories as $category) : ?>
+              <li class="dropdown-submenu">
+                <a href="<?php echo $category->getUrl(); ?>" data-toggle="collapse"><?php echo $category->getName(); ?></a>
+                <?php $catId = $category->getId(); // Parent Category ID
+                            $subcategory = $objectManager->create('Magento\Catalog\Model\Category')->load($category->getId());
+                            $subcats = $subcategory->getChildrenCategories();
+                            $categoryHelper = $this->getCategoryHelper();
+                            ?>
+                <ul class="dropdown-menu" id="<?php echo $category->getId(); ?>">
+                 <?php foreach ($subcats as $subcat) { ?>
+                  <li><a href="<?php echo $subcat->getUrl(); ?>" ><?php echo $subcat->getName(); ?></a></li>
+                 <?php } ?>
+                </ul>
+               
+              </li>
+                <?php endforeach; ?>
+            </ul>
+        </div>
+            
+        </div>
+        <!-- #col-md-3 -->
+
+
+        <div class="col-md-6">
+            <div class="searchProducts">
+<!--                <input class="form-control" placeholder="Search..." />-->
+                <?php echo $this->getChildHtml("header.main.search"); ?>
+            </div>
+            <!-- #searchProducts -->
+        </div>
+        <!--#col-md-6 -->
+
+        <div class="col-md-3">
+            <ul class="CompareOrCheckOut">
+
+                <span>
+
+                <li data-bind="scope: 'wishlist'" class="link wishlist"><a href="<?php echo $this->getUrl('wishlist') ?>">
+                        <!-- ko if: wishlist().counter -->
+                        <span data-bind="text: wishlist().items.length" class="counter qty total"></span>
+                        <!-- /ko -->
+                    <i class="far fa-heart"></i></a>
+
+                </li>
+
+                     <li class="minicart-wrapper">
+
+                         <a href="/checkout/cart/" class="showcart"><i class="far fa-shopping-bag"></i>
+                <span class="counter qty">
+                    <span class="counter-number">
+                        <?php echo $cartCount; ?>
+                    </span>
+            </span>
+                         </a>
+                     </li>
+                </ul>
+        </div>
+        <script>
+            require([
+                'Magento_Customer/js/customer-data'
+            ], function (customerData) {
+                var sections = ['cart'];
+                customerData.invalidate(sections);
+            });
+        </script>
+
+        <!-- col-md-3 -->
+
+    </div>
+    <!-- container -->
+</div>
+<!-- #AllCategoryMenu -->
+
+
+
+
+
+
+
+

@@ -1,0 +1,291 @@
+<?php
+/**
+ * Copyright © 2016 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+// @codingStandardsIgnoreFile
+
+/** @var $block \Magento\Catalog\Block\Product\View */
+
+$product = $block->getProduct(); ?>
+
+<div class="SingleProductPage">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-9">
+                <div class="row">
+                    <div class="col-md-5">
+                        <div class="ProductPictureBig">
+                            <?php
+                            $objectManager =\Magento\Framework\App\ObjectManager::getInstance();
+                            $helperImport = $objectManager->get('\Magento\Catalog\Helper\Image');
+
+                            $imageUrl = $helperImport->init($product, 'product_page_image_small')
+                                ->setImageFile($product->getSmallImage()) // image,small_image,thumbnail
+                                ->resize(380)
+                                ->getUrl();
+                            ?>
+                        <img src="<?php echo $imageUrl;?>" alt="-" class="img-responsive"  />
+                        </div>
+                        <!-- #ProductPictureBig -->
+                    </div>
+                    <!-- col-md-5 -->
+                    <?php
+                    $availibility = $info['button'] = $product->getIsSalable() ?   '<div class="stock available"><span>' . $block->escapeHtml(__('In stock')) . '</span></div>' :
+                        '<div class="stock unavailable"><span>' . $block->escapeHtml(__('Out of stock')) . '</span></div>';
+                    ?>
+                    <div class="col-md-7">
+                        <div class="productInformation">
+                            <div class="brandName">Western Digital</div>
+                            <div class="productName"><?php echo $product->getName();?></div>
+                            <ul class="productFeatures">
+                                <li>SKU: <?php echo $product->getSku(); ?></li>
+                                <li>Condition: <?php echo $product->getData('product_condition'); ?></li>
+                                <li>Availability: <span class="StockStatus"><?php echo $availibility ?></span> </li>
+                            </ul>
+                            <?php
+                            $price = $product->getPrice();
+                            $specialPrice = $product->getSpecialPrice();
+                            $saving = $price - $specialPrice;
+                            ?>
+                            <div class="Prices"><span class="savePrice">(You save $<?php echo number_format($saving, 2)  ?>) </span>
+                            <span class="actualPrice">$<?php echo number_format($specialPrice, 2) ?></span>
+                            <span class="wasPrice">$<?php echo number_format($price, 2)  ?></span></div>
+
+                            <div class="quantity form-inline">
+                                <span class="quantityTxt">Quantity:</span>
+                                <form data-product-sku="<?= $block->escapeHtmlAttr($product->getSku()) ?>"
+                                      action="<?= $block->escapeUrl($block->getSubmitUrl($product)) ?>" method="post"
+                                      id="product_addtocart_form"<?php if ($product->getOptions()) :?> enctype="multipart/form-data"<?php endif; ?>>
+                                    <input type="hidden" name="product" value="<?= (int)$product->getId() ?>" />
+                                    <input type="hidden" name="selected_configurable_option" value="" />
+                                    <input type="hidden" name="relatedproduct" id="related-products-field" value="" />
+                                    <input type="hidden" name="item"  value="<?= (int)$block->getRequest()->getParam('id') ?>" />
+                                    <?= $block->getBlockHtml('formkey') ?>
+                                    <?= $block->getChildHtml('form_top') ?>
+                                    <?php if (!$block->hasOptions()) :?>
+                                        <?= $block->getChildHtml('product_info_form_content') ?>
+                                    <?php else :?>
+                                        <?php if ($product->isSaleable() && $block->getOptionsContainer() == 'container1') :?>
+                                            <?= $block->getChildChildHtml('options_container') ?>
+                                        <?php endif;?>
+                                    <?php endif; ?>
+
+                                    <?php if ($product->isSaleable() && $block->hasOptions() && $block->getOptionsContainer() == 'container2') :?>
+                                        <?= $block->getChildChildHtml('options_container') ?>
+                                    <?php endif;?>
+                                    <?= $block->getChildHtml('form_bottom') ?>
+                                    <?php if ($block->shouldRenderQuantity()) :?>
+                                        <div class="field qty">
+                                            <label class="label" for="qty"><span><?= $block->escapeHtml(__('Qty')) ?></span></label>
+                                            <div class="control">
+                                                <input type="number"
+                                                       name="qty"
+                                                       id="qty"
+                                                       min="0"
+                                                       value="<?= $block->getProductDefaultQty() * 1 ?>"
+                                                       title="<?= $block->escapeHtmlAttr(__('Qty')) ?>"
+                                                       class="input-text qty"
+                                                       data-validate="<?= $block->escapeHtmlAttr(json_encode($block->getQuantityValidators())) ?>"
+                                                />
+                                            </div>
+                                        </div>
+                                    <?php endif; ?>
+                                    <div class="actions">
+                                        <button type="submit"
+                                                title="<?php echo ('Add to Cart') ?>"
+                                                class="action primary tocart"
+                                                id="product-addtocart-button">
+                                            <span><?php echo ('Add to Cart') ?></span>
+                                        </button>
+                                        <?= $block->getChildHtml('', true) ?>
+                                    </div>
+                                </form>
+
+<!--                                --><?php
+//                                $postDataHelper = $this->helper('Magento\Framework\Data\Helper\PostHelper');
+//                                $postData = $postDataHelper->getPostData($block->getAddToCartUrl($product), ['product' => $product->getEntityId()])
+//                                ?>
+<!--                                <button class="action tocart primary"-->
+<!--                                        data-post='--><?php ///* @escapeNotVerified */ echo $postData; ?><!--'-->
+<!--                                        type="button" title="--><?php ///* @escapeNotVerified */ echo __('Add to Cart1') ?><!--">-->
+<!--                                    <span>--><?php //echo ('Add to Cart') ?><!--</span>-->
+<!--                                </button>-->
+
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <!-- col-md-7 -->
+
+                </div>
+                <!-- row -->
+                <br><br>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="specificationBox">
+                            <div class="header">
+                                <a href="javascript:;">Description</a>
+                            </div>
+                            <!-- #header -->
+
+                            <div class="specificationGrid">
+                                <table class="table table-bordered">
+                                    <tr>
+                                        <td colspan="2">General Information:</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Brand</td>
+                                        <td><?php echo $product->getData('brand'); ?></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Part # </td>
+                                        <td><?php echo $product->getData('part_no'); ?> </td>
+                                    </tr>
+                                    <?php
+                                    $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+                                    $category = $objectManager->get('Magento\Framework\Registry')->registry('current_category');//get current category
+                                    ?>
+                                    <tr>
+                                        <td>Category </td>
+                                        <td> <?php echo $category->getName(); ?> </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>Availability </td>
+                                        <td><?php echo $availibility ?> </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td colspan="2">Technical Specifications:</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>Interface </td>
+                                        <td><?php echo $product->getData('interface'); ?> </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>Capacity </td>
+                                        <td><?php echo $product->getData('capacity'); ?></td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>Speed </td>
+                                        <td> <?php echo $product->getData('speed'); ?> </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>Cache </td>
+                                        <td><?php echo $product->getData('cache'); ?> </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>Size </td>
+                                        <td><?php echo $product->getData('size'); ?> </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <!-- #specificationGrid -->
+
+                        </div>
+                        <!-- #specificationBox-->
+                    </div>
+                    <!-- col-md-12 -->
+                </div>
+                <!-- row -->
+
+            </div>
+            <!-- #col-md-9 -->
+
+            <div class="col-md-3">
+                <div class="getAQuote withBorder">
+                    <h3>Request For Quote</h3>
+                    <p>Looking for a large quantity? Please call at 1-888-898-8012 and one of our representative will be happy to assist you.</p>
+                    <div class="requestForm">
+                        <form role="form" method="post">
+                            <div class="form-group">
+                                <label>Part Number:</label>
+                                <input type="text"  name="partNumber" class="form-control" />
+                            </div>
+                            <!-- #form-group -->
+                            <div class="form-group">
+                                <label>Quantity Needed:</label>
+                                <input type="text" name="quantity" class="form-control" />
+                            </div>
+                            <!-- #form-group -->
+                            <div class="form-group">
+                                <label>Email Address:</label>
+                                <input type="text" name="email" class="form-control" />
+                            </div>
+                            <!-- #form-group -->
+
+                            <div class="form-group">
+                                <input type="submit" name="submit" class="btn btn-default" value="Submit RFQ" />
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="bestPriceAward">
+                    <p>4 GREAT REASONS TO BUY FROM US:</p>
+                    <img src='<?php echo $this->getViewFileUrl('images/bestprice.png'); ?>' class="img-responsive" alt="-" />
+                </div>
+                <!-- #bestPriceAward -->
+
+            </div>
+            <!-- # 3.5-inch -->
+
+        </div>
+        <!-- row -->
+
+    </div>
+    <!-- container -->
+</div>
+<?php
+if(isset($_POST['submit']))
+{
+    $partNumber = $_POST['partNumber']; // Get Name value from HTML Form
+    $quantity = $_POST['quantity']; // Get Message Value
+    $email_id = $_POST['email']; // Get Email Value
+    $to = "no-reply@server2hardware.com"; // You can change here your Email
+    $subject = "'$partNumber' has been sent a mail"; // This is your subject
+
+    // HTML Message Starts here
+    $message = "<html>
+                                    <body>
+                                        <table style='width:600px;'>
+                                            <tbody>
+                                                <tr>
+                                                    <td style='width:150px'><strong>Name: </strong></td>
+                                                    <td style='width:400px'>$partNumber</td>
+                                                </tr>
+                                                <tr>
+                                                    <td style='width:150px'><strong>Email ID: </strong></td>
+                                                    <td style='width:400px'>$email_id</td>
+                                                </tr>
+                                                <tr>
+                                                    <td style='width:150px'><strong>Mobile No: </strong></td>
+                                                    <td style='width:400px'>$quantity</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </body>
+                            </html>";
+
+    // HTML Message Ends here
+
+    // Always set content-type when sending HTML email
+    $headers = "MIME-Version: 1.0" . "\r\n";
+    $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
+
+    // More headers
+    $headers .= 'From: Admin' . "\r\n"; // Give an email id on which you want get a reply. User will get a mail from this email id
+    $headers .= 'Cc: no-reply@server2hardware.com' . "\r\n"; // If you want add cc
+    $headers .= 'Bcc: no-reply@server2hardware.com' . "\r\n"; // If you want add Bcc
+
+    mail($to,$subject,$message,$headers);
+}
+?>

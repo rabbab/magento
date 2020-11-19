@@ -1,0 +1,8 @@
+<?php
+$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+$category = $objectManager->get('Magento\Framework\Registry')->registry('current_category');//get current category
+?>
+
+<div class="listing-category-name">
+    <h2><?php echo $category->getName(); ?></h2>
+</div>

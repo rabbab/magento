@@ -1,0 +1,22 @@
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+        <!-- Add local resources -->
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+        <css src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/css/bootstrap.min.css"  src_type="url" rel="stylesheet" type="text/css"  />
+        <css src="https://fonts.googleapis.com/css2?family=Exo:wght@300;400;500;600&amp;display=swap"  src_type="url" rel="stylesheet" type="text/css"  />
+        <css src="css/all-fontawesom-5-pro-style.css"/>
+        <css src="css/style.css"/>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js" src_type="url" />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/js/bootstrap.min.js" src_type="url" />
+
+        <!-- The following two ways to add local JavaScript files are equal -->
+        <!--        <script src="Magento_Catalog::js/sample1.js"/>-->
+        <link src="js/all-fa-5-pro.js"/>
+        <link src="js/custom.js"/>
+        <link src="js/mini-cart-action"/>
+        <link src="js/regular.js"/>
+
+    </head>
+</page>

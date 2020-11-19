@@ -1,0 +1,41 @@
+<?php
+$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+$category = $objectManager->get('Magento\Framework\Registry')->registry('current_category');//get current category
+?>
+
+<div class="listing-category-name">
+    <h2><?php echo $category->getName(); ?></h2>
+</div>
+
+<div class="catalogPageInner">
+<div class="catelogPageBanner">
+    <div class="row">
+        <div class="col-md-8 col-xs-8">
+            <div class="txt">
+                <p>P8982-69001 - HP 20GB 5400RPM IDE ATA-100 3.5-inch Hard Drive for HP DesignJet 5000 Series Printer</p>
+                <a href="javascript:" class="btn btn-default">Add To Cart</a>
+            </div>
+        </div>
+        <div class="col-md-4 col-xs-4">
+            <img src="<?php echo $this->getViewFileUrl('images/bannerp.png'); ?>" alt="-" class="img-responsive bannerP">
+        </div>
+    </div>
+</div>
+
+<?php
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+?>
+<?php
+/**
+ * Category view template
+ *
+ * @var $block \Magento\Catalog\Block\Category\View
+ */
+?>
+<?php if (!$block->isContentMode() || $block->isMixedMode()) :?>
+    <?= $block->getProductListHtml() ?>
+<?php endif; ?>
+</div>

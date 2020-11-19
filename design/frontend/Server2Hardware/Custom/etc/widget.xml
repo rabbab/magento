@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widgets xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Widget:etc/widget_file.xsd">
+    <widget id="cms_static_block">
+        <parameters>
+            <parameter name="template" xsi:type="select">
+                <options>
+                    <option name="option_id" value="Your_Module::view/form.phtml">
+                        <label translate="true">Your Template</label>
+                    </option>
+                </options>
+            </parameter>
+        </parameters>
+    </widget>
+</widgets>

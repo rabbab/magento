@@ -1,0 +1,48 @@
+<?php
+    $categories = $this->getCategoryCollection();
+    $categoryHelper = $this->getCategoryHelper();
+?>
+<div class="widget block block-static-block cwiw" id="catewithimg">
+    <div class="block-content">
+        <div class="content-heading">
+            <h2 class="title"><?php echo $this->getMainTitle(); ?></h2>
+            <p class="info"><?php echo $this->getTagLine(); ?></p>
+        </div>
+        <div class="row">
+        <?php
+        foreach($categories as $category):
+            $cat = $this->getCategorymodel($category->getId());
+            $image = $cat->getImageUrl();
+        ?>
+            <?php if($image != null): ?>
+             
+                      <div class="col-md-3">
+                      <div class="productShowCaseBox">
+                    <a class="category_name" href="<?php echo $cat->getUrl(); ?>">
+                       <img src="<?php echo $image; ?>" class="img-responsive category_image" alt="<?php echo $cat->getName(); ?>" />
+                        <h3><span><?php echo $cat->getName(); ?></span></h3>
+                    </a>
+                    <?php
+                    $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+                    $subcategory = $objectManager->create('Magento\Catalog\Model\Category')->load($category->getId());
+                    $subcats = $subcategory->getChildrenCategories();
+
+                    ?>
+                    <ul id="<?php echo $category->getId(); ?>">
+                        <?php  $x = 1; foreach ($subcats as $subcat) { ?>
+                            <?php
+                            if($x <= 3) { ?>
+                                <li><a href="<?php echo $subcat->getUrl(); ?>"><?php echo $subcat->getName(); ?></a></li>
+                            <?php } $x++; ?>
+<!--                            <li><a href="--><?php //echo $subcat->getUrl(); ?><!--" class="collapse">--><?php //echo $subcat->getName(); ?><!--</a></li>-->
+                        <?php } ?>
+                    </ul>
+                </div>
+        </div>
+            <?php endif; ?>
+        <?php endforeach; ?>
+        </div>
+    </div>
+</div>
+
+
